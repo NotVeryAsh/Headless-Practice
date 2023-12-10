@@ -2,8 +2,37 @@ import AppLayout from '@/components/Layouts/AppLayout'
 import Head from 'next/head'
 import Row from '@/components/Row'
 import Card from '@/components/Card'
+import makeRequest from '@/lib/request'
+import { useEffect, useState } from "react"
 
 const Dashboard = () => {
+
+    const [time, SetTime] = useState(
+        new Date().toLocaleTimeString(
+            'en-US',
+            {
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric",
+                day: "numeric",
+                month: "numeric",
+                year: "numeric",
+            }
+        )
+    )
+
+    useEffect(() => {
+
+        var timerID = setInterval(function() {
+            getTime().then((data) => {
+                SetTime(data.time)
+            })
+        }, 60000);
+
+        return () => clearInterval(timerID);
+
+    }, [time]);
+
     return (
         <AppLayout
             header={
@@ -21,7 +50,7 @@ const Dashboard = () => {
                         <p>The time is ...</p>
                     </Card>
                     <Card title="Time" width="w-9/12">
-                        <p>The time is ...</p>
+                        <p>The time is {time}</p>
                     </Card>
                 </Row>
                 <Row>
@@ -32,6 +61,10 @@ const Dashboard = () => {
             </div>
         </AppLayout>
     )
+}
+
+async function getTime() {
+    return await makeRequest('/api/time', 'GET')
 }
 
 export default Dashboard

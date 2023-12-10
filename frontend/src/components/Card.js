@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import makeRequest from '@/lib/request'
 
 export default function Card({ children, title = null, width = 'w-full' }) {
 
